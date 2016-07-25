@@ -9,7 +9,7 @@ mac {
   CONFIG -= app_bundle
 }
 
-OPENCV_INSTALL = /Users/maloney/dev/opt/opencv3/
+OPENCV_INSTALL = /path/to/opencv3/
 
 INCLUDEPATH += $$PWD/.. $$OPENCV_INSTALL/include
 
