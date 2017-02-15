@@ -111,12 +111,14 @@ namespace ASM {
                qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning because we use a temporary QImage";
             }
 
-            QImage   swapped;
+            QImage   swapped = inImage;
 
             if ( inImage.format() == QImage::Format_RGB32 )
-               swapped = inImage.convertToFormat( QImage::Format_RGB888 );
+            {
+               swapped = swapped.convertToFormat( QImage::Format_RGB888 );
+            }
 
-             swapped = inImage.rgbSwapped();
+            swapped = swapped.rgbSwapped();
 
             return cv::Mat( swapped.height(), swapped.width(),
                             CV_8UC3,
