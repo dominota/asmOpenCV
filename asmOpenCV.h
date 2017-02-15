@@ -47,11 +47,19 @@ namespace ASM {
          // 8-bit, 1 channel
          case CV_8UC1:
          {
-            static QVector<QRgb>  sColorTable( 256 );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+            QImage image( inMat.data,
+                          inMat.cols, inMat.rows,
+                          static_cast<int>(inMat.step),
+                          QImage::Format_Grayscale8 );
+#else
+            static QVector<QRgb>  sColorTable;
 
             // only create our color table the first time
             if ( sColorTable.isEmpty() )
             {
+               sColorTable.resize( 256 );
+
                for ( int i = 0; i < 256; ++i )
                {
                   sColorTable[i] = qRgb( i, i, i );
@@ -64,6 +72,7 @@ namespace ASM {
                           QImage::Format_Indexed8 );
 
             image.setColorTable( sColorTable );
+#endif
 
             return image;
          }
