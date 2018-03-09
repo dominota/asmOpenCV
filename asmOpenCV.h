@@ -143,21 +143,34 @@ namespace ASM {
 
          // 8-bit, 3 channel
          case QImage::Format_RGB32:
+         {
+            if ( !inCloneImageData )
+            {
+               qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning so we don't modify the original QImage data";
+            }
+
+            cv::Mat  mat( inImage.height(), inImage.width(),
+                          CV_8UC4,
+                          const_cast<uchar*>(inImage.bits()),
+                          static_cast<size_t>(inImage.bytesPerLine())
+                          );
+
+            cv::Mat  matNoAlpha;
+
+            cv::cvtColor( mat, matNoAlpha, cv::COLOR_BGRA2BGR );   // drop the all-white alpha channel
+
+            return matNoAlpha;
+         }
+
+         // 8-bit, 3 channel
          case QImage::Format_RGB888:
          {
             if ( !inCloneImageData )
             {
-               qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning because we use a temporary QImage";
+               qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning so we don't modify the original QImage data";
             }
 
-            QImage   swapped = inImage;
-
-            if ( inImage.format() == QImage::Format_RGB32 )
-            {
-               swapped = swapped.convertToFormat( QImage::Format_RGB888 );
-            }
-
-            swapped = swapped.rgbSwapped();
+            QImage   swapped = inImage.rgbSwapped();
 
             return cv::Mat( swapped.height(), swapped.width(),
                             CV_8UC3,
