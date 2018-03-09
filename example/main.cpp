@@ -48,6 +48,32 @@ static QMap<QImage::Format, QString>   sImageFormatEnumMap = {
    { QImage::Format::Format_Grayscale8, "Format_Grayscale8" }
 };
 
+static QString sQImageFormatToStr( QImage::Format inFormat )
+{
+   return sImageFormatEnumMap[inFormat];
+}
+
+static QString sCVTypeToStr( int inType )
+{
+   QString str( "CV_" );
+
+   switch ( CV_MAT_DEPTH( inType ) )
+   {
+      case CV_8U:    str += "8U"; break;
+      case CV_8S:    str += "8S"; break;
+      case CV_16U:   str += "16U"; break;
+      case CV_16S:   str += "16S"; break;
+      case CV_32S:   str += "32S"; break;
+      case CV_32F:   str += "32F"; break;
+      case CV_64F:   str += "64F"; break;
+      default:       str += "User"; break;
+   }
+
+   str += QStringLiteral( "C%1" ).arg( QString::number( CV_MAT_CN( inType ) ) );
+
+   return str;
+}
+
 int  main( int argc, char **argv )
 {
    QCoreApplication   app( argc, argv );
@@ -93,10 +119,12 @@ void  sImageBlur( const QString &inInputFile, const QString &inOutputFile )
       return;
    }
 
-   qInfo().noquote() << "Input image format:" << sImageFormatEnumMap[image.format()];
+   qInfo().noquote() << "Input image format:" << sQImageFormatToStr( image.format() );
 
    // Convert QImage to a cvMat
    cv::Mat  cvMat = ASM::QImageToCvMat( image, false );
+
+   qInfo().noquote() << "cv::Mat format:" << sCVTypeToStr( cvMat.type() );
 
    // ... do any required OpenCV processing
    cv::GaussianBlur( cvMat, cvMat, cv::Size( 11, 11 ), 0, 0, cv::BORDER_DEFAULT );
