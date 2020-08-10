@@ -9,11 +9,11 @@ mac {
   CONFIG -= app_bundle
 }
 
-OPENCV_INSTALL = /path/to/opencv3/
+OPENCV_INSTALL = /path/to/opencv4/
 
-INCLUDEPATH += $$PWD/.. $$OPENCV_INSTALL/include
+INCLUDEPATH += $$PWD/.. $$OPENCV_INSTALL/include/opencv4
 
-LIBS += "-L$$OPENCV_INSTALL/lib" -lopencv_core -lopencv_imgproc
+LIBS += "-L$$OPENCV_INSTALL/lib" -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
 
 HEADERS += \
    $$PWD/../asmOpenCV.h
